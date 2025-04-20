@@ -1,10 +1,9 @@
 ﻿using System.Text;
 using System.Text.Json.Serialization;
-using api_auth.Service;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.DataProtection.KeyManagement;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using api_auth.Service;
+using api_auth.Environment;
 
 namespace api_auth
 {
@@ -17,6 +16,8 @@ namespace api_auth
         }
         public void ConfigureServices(IServiceCollection services)
         {
+
+            JwtSettings.LoadJwtSettings(Configuration);
             services.AddControllers();
             services.AddCors(options =>
             {
@@ -48,7 +49,7 @@ namespace api_auth
                 x.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes("pN4xL7vT9qW2KdJmR3gYfUbHZCEXAoMw")),
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(JwtSettings.JwtSecret)),
                     ValidateIssuer = false,
                     ValidateAudience = false
                 };
